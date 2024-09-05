@@ -20,7 +20,7 @@ def main():
 
     """
     
-    model_path = '/home/eouser/programming/side_projects/aod_esti/prediction/best2.pth'
+    model_path = '/home/eouser/programming/side_projects/aod_esti/prediction/best100.pth'
     
     model = AOD_CNN()
     checkpoint = torch.load(model_path)
@@ -56,7 +56,7 @@ def main():
         preds_submit.append(pred)
 
     dfs[1] = preds_submit
-    dfs.to_csv("submit.csv", header=False, index=False)
+    dfs.to_csv("submit100.csv", header=False, index=False)
     
 if __name__ == '__main__':
     main()
