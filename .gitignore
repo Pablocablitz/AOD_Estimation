@@ -1,0 +1,5 @@
+data/data_split/*
+data/test_images
+data/train_images
+data/og_files.py
+prediction/
