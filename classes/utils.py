@@ -45,7 +45,6 @@ def plot_loss_metrics(metrics, save_path, plot_version):
     loss_train = [metrics[epoch]['loss_train'] for epoch in epochs]
     loss_eval = [metrics[epoch]['loss_eval'] for epoch in epochs]
     mse = [metrics[epoch]['MSE'] for epoch in epochs]
-    print(loss_eval, loss_train, mse)
     plt.figure(figsize=(8, 5))
     plt.plot(epochs, loss_train, label='Loss Train')
     plt.plot(epochs, loss_eval, label='Loss Eval')
@@ -145,3 +144,17 @@ class Dashboard:
             filename = os.path.join(directory_path,'validation_metrics_log.html')
             output_file(filename=filename, title='validation metrics log')
             save(self.fig, filename)
+            
+    def load_config_file(file_path: str) -> dict:
+        """
+        Load YAML file.
+
+        Args:
+            file_path (str): Path to the YAML file.
+
+        Returns:
+            dict: Dictionary containing configuration information.
+        """
+        with open(file_path, 'r') as file:
+            config = yaml.safe_load(file)
+        return config

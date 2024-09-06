@@ -3,4 +3,4 @@ data/test_images
 data/train_images
 data/og_files.py
 prediction/
-*/__pycache__
+__pycache__/

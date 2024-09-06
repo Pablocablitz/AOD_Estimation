@@ -1,0 +1,17 @@
+epochs : 50
+
+loss: "MSE"
+
+batch_size: 32
+
+lr: 1e-4
+
+gpu_device: 0
+
+prediction_dir: '/home/eouser/programming/side_projects/aod_esti/prediction'
+
+training_dir: '/home/eouser/programming/side_projects/aod_esti/data/data_split/train_data/train_output.csv'
+
+validation_dir: '/home/eouser/programming/side_projects/aod_esti/data/data_split/valid_data/val_output.csv'
+
+model: AOD_3CNN

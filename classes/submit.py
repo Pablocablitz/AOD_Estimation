@@ -20,7 +20,7 @@ def main():
 
     """
     
-    model_path = '/home/eouser/programming/side_projects/aod_esti/prediction/best100.pth'
+    model_path = '/home/eouser/programming/side_projects/aod_esti/prediction/best_e55_b32_3C.pth'
     
     model = AOD_CNN()
     checkpoint = torch.load(model_path)
