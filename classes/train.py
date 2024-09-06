@@ -10,7 +10,7 @@ import yaml
 from torch.utils.data.dataloader import DataLoader
 from dataset import TrainDataset, EvalDataset
 from tqdm import tqdm
-from utils import AverageMeter, plot_loss_metrics, Dashboard, count_model_parameters, estimate_model_size, load_config_file
+from utils import AverageMeter, plot_loss_metrics, Dashboard, count_model_parameters, estimate_model_size
 from sklearn.metrics import accuracy_score, f1_score
 from loguru import logger
 from model import AOD_CNN
@@ -47,7 +47,7 @@ def main(config):
     nb_parameters = count_model_parameters(model=model)  # Count model parameters
     
     # Loss function and optimizer
-    if LOSS_FUNC == "MSE"    
+    if LOSS_FUNC == "MSE":    
         criterion = nn.MSELoss()  # Mean Squared Error for regression tasks
         
     optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -59,7 +59,7 @@ def main(config):
     logger.info("Number of Validation data: {}".format(len(valid_path)))
     
     # Initialize datasets and data loaders
-    train_dataset = TrainDataset(df_path=train_path)
+    train_dataset = TrainDataset(df_path=train_path, augment=False)
     train_dataloader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
     
     eval_dataset = EvalDataset(df_path=valid_path)
@@ -118,21 +118,21 @@ def main(config):
         metrics_dict[epoch] = {"MSE": mse, "loss_train": train_losses.avg, "loss_eval": eval_losses.avg}
 
         # Plot and save metrics
-        plots = f{'loss_plot_e{NUM_EPOCH}_b{BATCH_SIZE}_{MODEL}.png'}
+        plots = f'loss_plot_e{NUM_EPOCH}_b{BATCH_SIZE}_{MODEL}.png'
         plot_loss_metrics(metrics=metrics_dict, save_path=prediction_dir, plot_version=plots)
 
         # Save validation metrics as a DataFrame
         df_metrics = pd.DataFrame(metrics_dict).T
         df_mean_metrics = df_metrics.mean().T
 
-        if epoch == 0:
-            df_val_metrics = pd.DataFrame(columns=df_mean_metrics.index)
-        df_val_metrics = pd.concat([df_val_metrics, df_mean_metrics], ignore_index=True)
+        # if epoch == 0:
+        #     df_val_metrics = pd.DataFrame(columns=df_mean_metrics.index)
+        # df_val_metrics = pd.concat([df_val_metrics, df_mean_metrics], ignore_index=True)
 
         # Generate and save dashboard with metrics
-        dashboard = Dashboard(df_val_metrics)
-        dashboard.generate_dashboard()
-        dashboard.save_dashboard(directory_path=prediction_dir)
+        # dashboard = Dashboard(df_val_metrics)
+        # dashboard.generate_dashboard()
+        # dashboard.save_dashboard(directory_path=prediction_dir)
 
         # Save best model weights based on evaluation performance
         if epoch == 0 or mse < best_mse:
@@ -148,12 +148,12 @@ def main(config):
     training_duration = end_training_date - start_training_date
     logger.info(f'Training Duration: {training_duration}')
     
-    df_val_metrics['Training_duration'] = training_duration
-    df_val_metrics['nb_parameters'] = nb_parameters
+    # df_val_metrics['Training_duration'] = training_duration
+    # df_val_metrics['nb_parameters'] = nb_parameters
     model_size = estimate_model_size(model)
     logger.info(f'Model size: {model_size}')
-    df_val_metrics['model_size'] = model_size
-    df_val_metrics.to_csv(os.path.join(prediction_dir, 'valid_metrics_log.csv'))
+    # df_val_metrics['model_size'] = model_size
+    # df_val_metrics.to_csv(os.path.join(prediction_dir, 'valid_metrics_log.csv'))
 
     
 if __name__ == '__main__':

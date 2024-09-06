@@ -2,13 +2,28 @@ import numpy as np
 import cv2
 import random
 import torch
+import random
+import rioxarray as xr
+import torchvision.transforms.functional as F
+
 from torch.utils.data import Dataset
 from torchvision import transforms, utils
 from loguru import logger
-import rioxarray as xr
 from PIL import Image
 
-import torchvision.transforms.functional as F
+def data_augmentation(image):
+    if random.random() > 0.5:
+        # Apply augmentations with 50% probability
+        augmentation_transforms = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip(),
+            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+            transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+        ])
+        return augmentation_transforms(image)
+    else:
+        # No augmentation
+        return image
 
 def normalize(band):
     band_min, band_max = (band.min(), band.max())
@@ -37,8 +52,9 @@ class TrainDataset(Dataset):
     """
     Custom training dataset class.
     """
-    def __init__(self, df_path):    
+    def __init__(self, df_path, augment=False):    
         self.df_path = df_path
+        self.augment = augment
         self.transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
@@ -49,10 +65,8 @@ class TrainDataset(Dataset):
         img_path = self.df_path.image_path.iloc[index]
         image = image_preprocessing(img_path)
 
-        # if self.data_augmentation: 
-        #     image = data_augmentation(image)
-        # else:
-        #     image = image.values
+        if self.augment: 
+            image = data_augmentation(image)
         
 
         # image = np.transpose(image, (2,1,0))

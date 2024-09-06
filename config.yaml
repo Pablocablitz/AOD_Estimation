@@ -14,4 +14,4 @@ training_dir: '/home/eouser/programming/side_projects/aod_esti/data/data_split/t
 
 validation_dir: '/home/eouser/programming/side_projects/aod_esti/data/data_split/valid_data/val_output.csv'
 
-model: AOD_3CNN
+model: AOD_CNN
